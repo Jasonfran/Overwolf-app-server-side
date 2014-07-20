@@ -6,7 +6,7 @@
 	$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
 
 	if (($_GET["region"] || $_GET["summoner"]) == NULL){
-		exit("ERROR: No region or summoner name!");
+		exit("ERROR: test No region or summoner name!");
 	}
 
 	$region = $_GET["region"];
