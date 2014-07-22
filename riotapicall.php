@@ -13,7 +13,7 @@
 	$region = $_GET["region"];
 	$summonerName = $_GET["summoner"];
 
-	$regions = ["br", "eune", "euw", "kr", "lan", "las", "na", "oce", "ru", "tr"];
+	$regions = ["BR", "EUNE", "EUW", "KR", "LAN", "LAS", "NA", "OCE", "RU", "TR"];
 
 	if (!in_array($region, $regions)){
 		exit("Invalid region!");
