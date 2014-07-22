@@ -24,10 +24,11 @@
 	$summonerInfo = $api->summoner()->info($summonerName);
 
 	$summonerInfoArray = [
-			"level" => $summonerInfo->summonerLevel,
-			"name" => $summonerInfo->name,
-			"profileIcon" => $summonerInfo->profileIconId
-
+			"basicStats" => [
+				"level" => $summonerInfo->summonerLevel,
+				"name" => $summonerInfo->name,
+				"profileIcon" => $summonerInfo->profileIconId
+			]
 		];
 
 		// my summoner id 41217037
@@ -35,39 +36,59 @@
 	try{	
 		$summonerLeague = $api->league()->league($summonerInfo->id, true);
 		$summonerLeagueArray = [
+		"rankedSummary" =>[
 			"leagueName" => $summonerLeague[0]->name,
 			"division" => $summonerLeague[0]->tier." ".$summonerLeague[0][0]->division,
 			"LP" => $summonerLeague[0][0]->leaguePoints,
 			"rankedWins" => $summonerLeague[0][0]->wins
+			]
 		];
 	}catch(Exception $e){
 
 		$summonerLeagueArray = [
+		"rankedSummary" => [
 			"leagueName" => "null",
 			"division" => "null",
 			"LP" => "null",
 			"rankedWins" => "null"
+			]
 		];
 	}
 
-	echo(json_encode(array_merge($summonerInfoArray, $summonerLeagueArray)));
+	$basicAndRanked = array_merge($summonerInfoArray, $summonerLeagueArray);
 
-	$season = $api->stats()->setSeason("SEASON4");
-	$rankedStats = $season->summary($summonerInfo->id)[5];
 
-	//print_r($rankedStats);
+	try{
+		$season = $api->stats()->setSeason("SEASON4");
+		$rankedStats = $season->summary($summonerInfo->id)[5];
 
-	$rankedStatsArray = [
-		"rankedStats" => [
-			"wins" => $rankedStats->wins,
-			"losses" => $rankedStats->losses,
-			"totalGames" => ($rankedStats->wins + $rankedStats->losses),
-			"totalChampionKills" => $rankedStats->aggregatedStats->totalChampionKills,
-			"totalMinionKills" => $rankedStats->aggregatedStats->totalMinionKills,
-			"totalTurretsKilled" => $rankedStats->aggregatedStats->totalTurretsKilled,
-			"totalJungleKilled" => $rankedStats->aggregatedStats->totalNeutralMinionsKilled,
-			"totalAssists" => $rankedStats->aggregatedStats->totalAssists
-		]
-	];
-	echo(json_encode($rankedStatsArray));
+		//print_r($rankedStats);
+
+		$rankedStatsArray = [
+			"rankedStats" => [
+				"wins" => $rankedStats->wins,
+				"losses" => $rankedStats->losses,
+				"totalGames" => ($rankedStats->wins + $rankedStats->losses),
+				"totalChampionKills" => $rankedStats->aggregatedStats->totalChampionKills,
+				"totalMinionKills" => $rankedStats->aggregatedStats->totalMinionKills,
+				"totalTurretsKilled" => $rankedStats->aggregatedStats->totalTurretsKilled,
+				"totalJungleKilled" => $rankedStats->aggregatedStats->totalNeutralMinionsKilled,
+				"totalAssists" => $rankedStats->aggregatedStats->totalAssists
+			]
+		];
+	}catch(Exception $e){
+		$rankedStatsArray = [
+			"rankedStats" => [
+				"wins" => "null",
+				"losses" => "null",
+				"totalGames" => "null",
+				"totalChampionKills" => "null",
+				"totalMinionKills" => "null",
+				"totalTurretsKilled" => "null",
+				"totalJungleKilled" => "null",
+				"totalAssists" => "null"
+			]
+		];
+	}
+	echo(json_encode(array_merge($basicAndRanked, $rankedStatsArray)));
 ?>
