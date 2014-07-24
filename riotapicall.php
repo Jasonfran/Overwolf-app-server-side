@@ -1,5 +1,6 @@
 <?php
 	header('Access-Control-Allow-Origin: *');
+	header('Content-Type: application/json');
 	require 'vendor/autoload.php';
 
 	use LeagueWrap\Api;
@@ -47,10 +48,10 @@
 
 		$summonerLeagueArray = [
 		"rankedSummary" => [
-			"leagueName" => "null",
-			"division" => "null",
-			"LP" => "null",
-			"rankedWins" => "null"
+			"leagueName" => "Unranked",
+			"division" => "Unranked",
+			"LP" => "Unranked",
+			"rankedWins" => "Unranked"
 			]
 		];
 	}
@@ -69,26 +70,26 @@
 				"wins" => $rankedStats->wins,
 				"losses" => $rankedStats->losses,
 				"totalGames" => ($rankedStats->wins + $rankedStats->losses),
-				"totalChampionKills" => $rankedStats->aggregatedStats->totalChampionKills,
-				"totalMinionKills" => $rankedStats->aggregatedStats->totalMinionKills,
-				"totalTurretsKilled" => $rankedStats->aggregatedStats->totalTurretsKilled,
-				"totalJungleKilled" => $rankedStats->aggregatedStats->totalNeutralMinionsKilled,
-				"totalAssists" => $rankedStats->aggregatedStats->totalAssists
+				"Total Champion Kills" => $rankedStats->aggregatedStats->totalChampionKills,
+				"Total Minions Killed" => $rankedStats->aggregatedStats->totalMinionKills,
+				"Total Turrets Destroyed" => $rankedStats->aggregatedStats->totalTurretsKilled,
+				"Total Jungle Creeps Killed" => $rankedStats->aggregatedStats->totalNeutralMinionsKilled,
+				"Total Assists" => $rankedStats->aggregatedStats->totalAssists
 			]
 		];
 	}catch(Exception $e){
 		$rankedStatsArray = [
 			"rankedStats" => [
-				"wins" => "null",
-				"losses" => "null",
-				"totalGames" => "null",
-				"totalChampionKills" => "null",
-				"totalMinionKills" => "null",
-				"totalTurretsKilled" => "null",
-				"totalJungleKilled" => "null",
-				"totalAssists" => "null"
+				"wins" => "Unranked",
+				"losses" => "Unranked",
+				"totalGames" => "Unranked",
+				"totalChampionKills" => "Unranked",
+				"totalMinionKills" => "Unranked",
+				"totalTurretsKilled" => "Unranked",
+				"totalJungleKilled" => "Unranked",
+				"totalAssists" => "Unranked"
 			]
 		];
 	}
-	echo(json_encode(array_merge($basicAndRanked, $rankedStatsArray)));
+	echo(json_encode(array_merge($basicAndRanked, $rankedStatsArray), JSON_PRETTY_PRINT));
 ?>
