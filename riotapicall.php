@@ -67,8 +67,13 @@
 	try{
 		$season = $api->stats()->setSeason("SEASON4");
 		$rankedStats = $season->summary($summonerInfo->id)[5];
-
-		//print_r($rankedStats);
+		$rankedStats2 = $season->summary($summonerInfo->id);
+		for ($i=0; $i < count($rankedStats2); $i++) { 
+			if($rankedStats2[$i]->playerStatSummaryType == "RankedSolo5x5"){
+				$rankedStats = $season->summary($summonerInfo->id)[$i];
+				break;
+			}
+		}
 
 		$rankedStatsArray = [
 			"rankedStats" => [
