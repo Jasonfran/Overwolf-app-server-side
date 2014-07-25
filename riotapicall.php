@@ -8,7 +8,7 @@
 	$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
 
 	if (($_GET["region"] || $_GET["summoner"]) == NULL){
-		exit("No region or summoner name!");
+		exit('{"success":"false", "error":"No summoner name or region"}');
 	}
 
 	$region = $_GET["region"];
@@ -17,12 +17,17 @@
 	$regions = ["BR", "EUNE", "EUW", "KR", "LAN", "LAS", "NA", "OCE", "RU", "TR"];
 
 	if (!in_array($region, $regions)){
-		exit("Invalid region!");
+		exit('{"success":"false", "error":"Incorrect region"}');
 	}
 
 	$api = new Api($myKey); // Load up the API
 	$api->setRegion($region);          
-	$summonerInfo = $api->summoner()->info($summonerName);
+	try{
+		$summonerInfo = $api->summoner()->info($summonerName);
+		//print_r($summonerInfo);
+	}catch(Exception $e){
+		exit('{"success":"false", "error":"Summoner not found in the system"}');
+	}
 
 	$summonerInfoArray = [
 			"basicStats" => [
