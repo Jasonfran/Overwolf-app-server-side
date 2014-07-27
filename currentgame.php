@@ -19,7 +19,7 @@
 	}
 
 	$region = $_GET["region"];
-	$summonerName = $_GET["summoner"];
+	$summonerName = str_replace(' ', '', htmlspecialchars_decode($_GET["summoner"]));
 
 	$regions = ["BR", "EUNE", "EUW", "LAN", "LAS", "NA", "OCE", "RU", "TR"];
 
@@ -34,35 +34,91 @@
 	$file = file_get_contents('https://community-league-of-legends.p.mashape.com/api/v1.0/'.$region.'/summoner/retrieveInProgressSpectatorGameInfo/'.$summonerName, false, $context);
 
 	$JSONdecoded = json_decode($file);
+
+	//echo($file);
+
+
 	if(!$JSONdecoded->success == "false"){
 		$teamOne = $JSONdecoded->game->teamOne->array;
 		$teamTwo = $JSONdecoded->game->teamTwo->array;
+
+		$allSummoners = [];
 		$success = [
 			"success" => "true"
 			];
-		$teamOneArray = [];
-		for ($i=0; $i < count($teamOne); $i++) { 
-			$teamOneArray["teamone"][$i] = $teamOne[$i]->summonerName;
-		}
-
-		$teamTwoArray = [];
-		for ($i=0; $i < count($teamOne); $i++) { 
-			$teamOneArray["teamtwo"][$i] = $teamTwo[$i]->summonerName;
-		}
-		
-		/*NEED TO GET SUMMONER SPELLS NEXT, BECAUSE MY WAY WASNT WORKING*/
 
 		$summonerSpells = $JSONdecoded->game->playerChampionSelections->array;
 		
 		$summonerSpellsArray = [];
 
 		for ($i=0; $i < count($summonerSpells); $i++) { 
-			$summonerSpellsArray['summonerSpells'][$summonerSpells[$i]->summonerInternalName] = $summonerSpells[$i]->spell1Id." ".$summonerSpells[$i]->spell2Id;
+			$summonerSpellsArray['summonerSpells'][$summonerSpells[$i]->summonerInternalName] = $summonerSpells[$i]->spell1Id." ".$summonerSpells[$i]->spell2Id." ".$summonerSpells[$i]->championId;
 		}
 
+		$teamOneArray = [];
+		for ($i=0; $i < count($teamOne); $i++) { 
+			$theName = strtolower(str_replace(' ', '', $teamOne[$i]->summonerName));
+			$theirSpellsAndChamp = $summonerSpellsArray['summonerSpells'][$theName];
+			$teamOneArray["teamOne"][$teamOne[$i]->summonerName] = $theirSpellsAndChamp;
+			array_push($allSummoners, $teamOne[$i]->summonerName);
+		}
+
+		$teamTwoArray = [];
+		for ($i=0; $i < count($teamTwo); $i++) { 
+			$theName = strtolower(str_replace(' ', '', $teamTwo[$i]->summonerName));
+			$theirSpellsAndChamp = $summonerSpellsArray['summonerSpells'][$theName];
+			$teamOneArray["teamTwo"][$teamTwo[$i]->summonerName] = $theirSpellsAndChamp;
+			array_push($allSummoners, $teamTwo[$i]->summonerName);
+		}
+
+
+    	//print_r($allSummoners);
+
+    	$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
+
+		$api = new Api($myKey); // Load up the API
+		$api->setRegion($region); 
+
+		$summoner = $api->summoner();
+		
+		$allSummonerInfo = $summoner->info($allSummoners);
+
+		//print_r($allSummonerInfo);
+
+		$summonerInfoArray = [];
+		$allSummonerIds = [];
+
+		foreach ($allSummonerInfo as $key => $value) { 
+		 	$allSummonerIds[$allSummonerInfo[$key]->name." ".$allSummonerInfo[$key]->summonerLevel] = $allSummonerInfo[$key]->id;
+		}
+
+		try{
+			$league = $api->league()->league($allSummonerIds, true);
+
+			//print_r($league);
+
+			foreach ($allSummonerInfo as $key => $value) {
+				$summonerInfoArray['summonerRanks'][$allSummonerInfo[$key]->name] = [
+					"id" => $allSummonerInfo[$key]->id,
+					"level" => $allSummonerInfo[$key]->summonerLevel,
+					"name" => $allSummonerInfo[$key]->name,
+					"systemName" => strtolower(str_replace(' ', '', $allSummonerInfo[$key]->name))
+
+				];
+			}
+
+			foreach ($summonerInfoArray['summonerRanks'] as $key => $value) {
+				
+				$summonerInfoArray['summonerRanks'][$key]['league'] = $league[$summonerInfoArray['summonerRanks'][$key]['id']][0]->tier." ".$league[$summonerInfoArray['summonerRanks'][$key]['id']][0][0]->division;
+			}
+		}catch(Exception $e){
+			
+		}
+		
+
 		$bothTeams = array_merge(array_merge($success, $teamOneArray), $teamTwoArray);
-		$bothTeamsAndSpells = array_merge($bothTeams, $summonerSpellsArray);
-		echo(json_encode($bothTeamsAndSpells, JSON_PRETTY_PRINT));
+		$bothTeamsWithRanks = array_merge($bothTeams, $summonerInfoArray);
+		echo(json_encode($bothTeamsWithRanks, JSON_PRETTY_PRINT));
 
 		
 	}
