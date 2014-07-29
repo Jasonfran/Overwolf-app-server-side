@@ -41,21 +41,24 @@
 	if(!$JSONdecoded->success == "false"){
 		$teamOne = $JSONdecoded->game->teamOne->array;
 		$teamTwo = $JSONdecoded->game->teamTwo->array;
-
-		$allSummoners = [];
-		$success = [
-			"success" => "true"
-			];
-
-		$summonerSpells = $JSONdecoded->game->playerChampionSelections->array;
-		
-		$summonerSpellsArray = [];
-		$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
+	$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
 
 		$api = new Api($myKey); // Load up the API
 		$api->setRegion($region); 
 
 		$championData = $api->staticData()->getChampions("info");
+		$latestVersion = $api->staticData()->version()[0];
+		$allSummoners = [];
+		$success = [
+			"success" => "true",
+			"version" => $latestVersion
+			];
+
+		$summonerSpells = $JSONdecoded->game->playerChampionSelections->array;
+		
+		$summonerSpellsArray = [];
+		
+		
 
 		for ($i=0; $i < count($summonerSpells); $i++) { 
 			
