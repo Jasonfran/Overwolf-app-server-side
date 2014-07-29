@@ -50,9 +50,17 @@
 		$summonerSpells = $JSONdecoded->game->playerChampionSelections->array;
 		
 		$summonerSpellsArray = [];
+		$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
+
+		$api = new Api($myKey); // Load up the API
+		$api->setRegion($region); 
+
+		$championData = $api->staticData()->getChampions("info");
 
 		for ($i=0; $i < count($summonerSpells); $i++) { 
-			$summonerSpellsArray['summonerSpells'][$summonerSpells[$i]->summonerInternalName] = $summonerSpells[$i]->spell1Id." ".$summonerSpells[$i]->spell2Id." ".$summonerSpells[$i]->championId;
+			
+			$champName = $championData[$summonerSpells[$i]->championId]->name;
+			$summonerSpellsArray['summonerSpells'][$summonerSpells[$i]->summonerInternalName] = $summonerSpells[$i]->spell1Id." ".$summonerSpells[$i]->spell2Id." ".$champName;
 		}
 
 		$teamOneArray = [];
@@ -74,10 +82,7 @@
 
     	//print_r($allSummoners);
 
-    	$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
-
-		$api = new Api($myKey); // Load up the API
-		$api->setRegion($region); 
+    	
 
 		$summoner = $api->summoner();
 		
