@@ -21,7 +21,7 @@
 	$region = $_GET["region"];
 	$summonerName = str_replace(' ', '', htmlspecialchars_decode($_GET["summoner"]));
 
-	$regions = ["BR", "EUNE", "EUW", "LAN", "LAS", "NA", "OCE", "RU", "TR"];
+	$regions = ["BR", "EUNE", "EUW", "LAN", "LAS", "NA", "OCE", "RU", "TR", "EU"];
 
 	if ($region == "KR") {
 		exit('{"success": "false","error": "Sorry, cant connect to korean API for current game information"}');
@@ -31,7 +31,7 @@
 	}
 
 	// Open the file using the HTTP headers set above
-	$file = file_get_contents('https://community-league-of-legends.p.mashape.com/api/v1.0/'.$region.'/summoner/retrieveInProgressSpectatorGameInfo/'.$summonerName, false, $context);
+	$file = file_get_contents('https://community-league-of-legends.p.mashape.com/api/v1.0/'.strtolower($region).'/summoner/retrieveInProgressSpectatorGameInfo/'.$summonerName, false, $context);
 
 	$JSONdecoded = json_decode($file);
 
