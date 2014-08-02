@@ -45,7 +45,8 @@
 
 		$api = new Api($myKey); // Load up the API
 		$api->setRegion($region); 
-		$championData = $api->staticData()->setLocale('en_US')->getChampions("info");
+		$api->staticData()->setLocale('en_US');
+		$championData = $api->staticData()->getChampions("info");
 		$latestVersion = $api->staticData()->version()[0];
 		$allSummoners = [];
 		$success = [
