@@ -10,3 +10,9 @@ handlers:
 
 - url: /currentgame
   script: currentgame.php
+
+- url: /curltest
+  script: curltest.php
+
+- url: /riot.html
+  script: riot.html
