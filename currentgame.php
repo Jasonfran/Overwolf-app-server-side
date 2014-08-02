@@ -114,7 +114,7 @@
 					"id" => $allSummonerInfo[$key]->id,
 					"level" => $allSummonerInfo[$key]->summonerLevel,
 					"name" => $allSummonerInfo[$key]->name,
-					"systemName" => strtolower(str_replace(' ', '', $allSummonerInfo[$key]->name))
+					"systemName" => strtolower(str_replace(' ', '', $allSummonerInfo[$key]->name)),
 
 				];
 			}
@@ -122,6 +122,8 @@
 			foreach ($summonerInfoArray['summonerRanks'] as $key => $value) {
 				
 				$summonerInfoArray['summonerRanks'][$key]['league'] = $league[$summonerInfoArray['summonerRanks'][$key]['id']][0]->tier." ".$league[$summonerInfoArray['summonerRanks'][$key]['id']][0][0]->division;
+				$summonerInfoArray['summonerRanks'][$key]['wins'] = $league[$summonerInfoArray['summonerRanks'][$key]['id']][0][0]->wins;
+				$summonerInfoArray['summonerRanks'][$key]['lp'] = $league[$summonerInfoArray['summonerRanks'][$key]['id']][0][0]->leaguePoints;
 			}
 		}catch(Exception $e){
 			
