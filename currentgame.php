@@ -91,13 +91,17 @@
 		
 		$allSummonerInfo = $summoner->info($allSummoners);
 
+
+
 		//print_r($allSummonerInfo);
 
 		$summonerInfoArray = [];
 		$allSummonerIds = [];
+		$allSummonerIdsForStats = [];
 
 		foreach ($allSummonerInfo as $key => $value) { 
 		 	$allSummonerIds[$allSummonerInfo[$key]->name." ".$allSummonerInfo[$key]->summonerLevel] = $allSummonerInfo[$key]->id;
+		 	array_push($allSummonerIdsForStats,$allSummonerInfo[$key]->id);
 		}
 
 		try{
