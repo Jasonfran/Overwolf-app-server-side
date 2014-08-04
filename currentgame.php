@@ -41,7 +41,7 @@
 	if(!$JSONdecoded->success == "false"){
 		$teamOne = $JSONdecoded->game->teamOne->array;
 		$teamTwo = $JSONdecoded->game->teamTwo->array;
-	$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
+		$myKey = "f3eea3f7-c790-4f52-bef0-3fe0f98e9392";
 
 		$api = new Api($myKey); // Load up the API
 		$api->setRegion($region); 
