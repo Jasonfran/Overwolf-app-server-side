@@ -16,3 +16,6 @@ handlers:
 
 - url: /riot.html
   script: riot.html
+
+- url: /status
+  script: status.php

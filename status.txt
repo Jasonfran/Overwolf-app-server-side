@@ -1,0 +1,3 @@
+{
+	message: "EUW League API currently experiencing issues this may lead to ranked stats displaying incorrectly."
+}

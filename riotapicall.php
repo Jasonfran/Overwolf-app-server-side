@@ -21,6 +21,7 @@
 	}
 
 	$api = new Api($myKey); // Load up the API
+	$api->remember(60);
 	$api->setRegion($region);          
 	try{
 		$summonerInfo = $api->summoner()->info($summonerName);
@@ -50,7 +51,7 @@
 			]
 		];
 	}catch(Exception $e){
-
+		//print($e);
 		$summonerLeagueArray = [
 		"rankedSummary" => [
 			"leagueName" => "Unranked",
