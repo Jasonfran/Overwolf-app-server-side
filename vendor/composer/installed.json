@@ -1,17 +1,17 @@
 [
     {
         "name": "guzzlehttp/streams",
-        "version": "1.1.0",
-        "version_normalized": "1.1.0.0",
+        "version": "1.5.1",
+        "version_normalized": "1.5.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/streams.git",
-            "reference": "cf0c8c33ca95cc147efba4c714f630ee44767180"
+            "reference": "fb0d1ee29987c2bdc59867bffaade6fc88c2675f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/streams/zipball/cf0c8c33ca95cc147efba4c714f630ee44767180",
-            "reference": "cf0c8c33ca95cc147efba4c714f630ee44767180",
+            "url": "https://api.github.com/repos/guzzle/streams/zipball/fb0d1ee29987c2bdc59867bffaade6fc88c2675f",
+            "reference": "fb0d1ee29987c2bdc59867bffaade6fc88c2675f",
             "shasum": ""
         },
         "require": {
@@ -20,11 +20,11 @@
         "require-dev": {
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2014-04-03 04:48:24",
+        "time": "2014-08-10 23:57:01",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.0.x-dev"
+                "dev-master": "1.5-dev"
             }
         },
         "installation-source": "dist",
@@ -119,17 +119,17 @@
     },
     {
         "name": "paquettg/leaguewrap",
-        "version": "dev-dev/0.6.0",
-        "version_normalized": "dev-dev/0.6.0",
+        "version": "0.6.1",
+        "version_normalized": "0.6.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/paquettg/leaguewrap.git",
-            "reference": "dc89d44c29a066c8ec4e545df7b84ceb1bf75ad3"
+            "reference": "c7162afc9ab2980d8ab29498aa1b4e75cf7d2198"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/paquettg/leaguewrap/zipball/dc89d44c29a066c8ec4e545df7b84ceb1bf75ad3",
-            "reference": "dc89d44c29a066c8ec4e545df7b84ceb1bf75ad3",
+            "url": "https://api.github.com/repos/paquettg/leaguewrap/zipball/c7162afc9ab2980d8ab29498aa1b4e75cf7d2198",
+            "reference": "c7162afc9ab2980d8ab29498aa1b4e75cf7d2198",
             "shasum": ""
         },
         "require": {
@@ -138,9 +138,10 @@
         },
         "require-dev": {
             "mockery/mockery": "0.8.*",
-            "phpunit/phpunit": "3.7.*"
+            "phpunit/phpunit": "3.7.*",
+            "satooshi/php-coveralls": "0.6.*"
         },
-        "time": "2014-07-10 14:41:16",
+        "time": "2015-01-14 18:15:29",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -166,6 +167,7 @@
             "facade",
             "league",
             "legends",
+            "proxy",
             "wrap"
         ]
     }
