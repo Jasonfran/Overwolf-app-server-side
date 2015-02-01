@@ -22,7 +22,7 @@
 
 	$api = new Api($myKey); // Load up the API
 	$api->remember(60);
-	$api->setRegion($region);          
+	$api->setRegion($region);
 	try{
 		$summonerInfo = $api->summoner()->info($summonerName);
 		//print_r($summonerInfo);
@@ -40,7 +40,7 @@
 
 		// my summoner id 41217037
 
-	try{	
+	try{
 		$summonerLeague = $api->league()->league($summonerInfo->id, true);
 		$summonerLeagueArray = [
 		"rankedSummary" =>[
@@ -66,10 +66,10 @@
 
 
 	try{
-		$season = $api->stats()->setSeason("SEASON2015"):
+		$season = $api->stats()->setSeason("SEASON2015");
 		$rankedStats = $season->summary($summonerInfo->id)[5];
 		$rankedStats2 = $season->summary($summonerInfo->id);
-		for ($i=0; $i < count($rankedStats2); $i++) { 
+		for ($i=0; $i < count($rankedStats2); $i++) {
 			if($rankedStats2[$i]->playerStatSummaryType == "RankedSolo5x5"){
 				$rankedStats = $season->summary($summonerInfo->id)[$i];
 				break;
