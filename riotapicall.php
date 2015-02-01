@@ -22,7 +22,7 @@
 
 	$api = new Api($myKey); // Load up the API
 	$api->remember(60);
-	$api->setRegion($region);
+	$api->setRegion(strtolower($region));
 	try{
 		$summonerInfo = $api->summoner()->info($summonerName);
 		//print_r($summonerInfo);
