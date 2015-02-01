@@ -66,7 +66,11 @@
 
 
 	try{
+<<<<<<< HEAD
 		$season = $api->stats()->setSeason("SEASON2015");
+=======
+		$season = $api->stats()->setSeason("SEASON4");
+>>>>>>> parent of 83745ca... Update riotapicall.php
 		$rankedStats = $season->summary($summonerInfo->id)[5];
 		$rankedStats2 = $season->summary($summonerInfo->id);
 		for ($i=0; $i < count($rankedStats2); $i++) {
