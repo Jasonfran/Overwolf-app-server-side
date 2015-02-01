@@ -5,6 +5,7 @@ use Countable;
 use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
+use LeagueWrap\Exception\ListKeyNotSetException;
 
 Abstract class AbstractListDto extends AbstractDto implements ArrayAccess, IteratorAggregate, Countable {
 
@@ -53,14 +54,14 @@ Abstract class AbstractListDto extends AbstractDto implements ArrayAccess, Itera
 		return new ArrayIterator($this->getListByKey());
 	}
 
-	public function count($mode = COUNT_NORMAL)
+	public function count()
 	{
 		return count($this->getListByKey());
 	}
 
 	protected function getListByKey()
 	{
-		if (is_null($this->listKey) or
+		if (is_null($this->listKey) ||
 		     ! isset($this->info[$this->listKey]))
 		{
 			throw new ListKeyNotSetException('The listKey is not found in the abstract list DTO');

@@ -1,6 +1,9 @@
 <?php
 namespace LeagueWrap\Dto;
 
+use LeagueWrap\Api\Staticdata;
+use LeagueWrap\StaticOptimizer;
+
 Abstract class AbstractDto {
 	
 	protected $info;
@@ -67,6 +70,24 @@ Abstract class AbstractDto {
 	}
 
 	/**
+	 * Attempts to load all static data within the children DTO
+	 * objects.
+	 *
+	 * @param Statcidata $staticData
+	 * @chainable
+	 */
+	public function loadStaticData(Staticdata $staticData)
+	{
+		$fields = $this->getStaticFields();
+		$optimizer = new StaticOptimizer;
+		$optimizer->optimizeFields($fields)
+		          ->setStaticInfo($staticData);
+		$this->addStaticData($optimizer);
+
+		return $this;
+	}
+
+	/**
 	 * Returns the raw info array
 	 * 
 	 * @return array
@@ -92,6 +113,63 @@ Abstract class AbstractDto {
 		}
 
 		return $raw;
+	}
+
+	/**
+	 * Gets all static fields that we expect to need to get all static data
+	 * for any child dto object.
+	 *
+	 * @return array
+	 */
+	protected function getStaticFields()
+	{
+		$fields = [];
+		foreach ($this->info as $info)
+		{
+			if (is_array($info))
+			{
+				foreach ($info as $value)
+				{
+					if ($value instanceof AbstractDto)
+					{
+						$fields += $value->getStaticFields();
+					}
+				}
+			}
+			if ($info instanceof AbstractDto)
+			{
+				$fields += $info->getStaticFields();
+			}
+		}
+		return $fields;
+	}
+
+	/**
+	 * Attempts to add the static data that we got from getStaticData to
+	 * any children DTO objects.
+	 *
+	 * @param Statcidata $staticData
+	 * @return void
+	 */
+	protected function addStaticData(StaticOptimizer $optimizer)
+	{
+		foreach ($this->info as $info)
+		{
+			if (is_array($info))
+			{
+				foreach ($info as $value)
+				{
+					if ($value instanceof AbstractDto)
+					{
+						$value->addStaticData($optimizer);
+					}
+				}
+			}
+			if ($info instanceof AbstractDto)
+			{
+				$info->addStaticData($optimizer);
+			}
+		}
 	}
 
 	/**

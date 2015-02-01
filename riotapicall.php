@@ -5,7 +5,7 @@
 
 	use LeagueWrap\Api;
 
-	$myKey = "ba1f3416-73c2-4e01-b53a-fc1e9ff83e37";
+	$myKey = "10c46b79-0896-48d7-9364-67f773efdccd";
 
 	if (($_GET["region"] || $_GET["summoner"]) == NULL){
 		exit('{"success":"false", "error":"No summoner name or region"}');
@@ -27,6 +27,7 @@
 		$summonerInfo = $api->summoner()->info($summonerName);
 		//print_r($summonerInfo);
 	}catch(Exception $e){
+		print($e);
 		exit('{"success":"false", "error":"Summoner not found in the system"}');
 	}
 
@@ -51,7 +52,7 @@
 			]
 		];
 	}catch(Exception $e){
-		//print($e);
+		print($e);
 		$summonerLeagueArray = [
 		"rankedSummary" => [
 			"leagueName" => "Unranked",
