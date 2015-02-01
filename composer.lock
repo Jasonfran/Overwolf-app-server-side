@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b2ed9ffb3b85ce433a7646b1799f4723",
+    "hash": "21545a7c075cce15714acd4625ad1463",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -69,16 +69,16 @@
         },
         {
             "name": "guzzlehttp/streams",
-            "version": "1.5.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/streams.git",
-                "reference": "fb0d1ee29987c2bdc59867bffaade6fc88c2675f"
+                "reference": "cf0c8c33ca95cc147efba4c714f630ee44767180"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/streams/zipball/fb0d1ee29987c2bdc59867bffaade6fc88c2675f",
-                "reference": "fb0d1ee29987c2bdc59867bffaade6fc88c2675f",
+                "url": "https://api.github.com/repos/guzzle/streams/zipball/cf0c8c33ca95cc147efba4c714f630ee44767180",
+                "reference": "cf0c8c33ca95cc147efba4c714f630ee44767180",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5-dev"
+                    "dev-master": "1.0.x-dev"
                 }
             },
             "autoload": {
@@ -118,20 +118,20 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-08-10 23:57:01"
+            "time": "2014-04-03 04:48:24"
         },
         {
             "name": "paquettg/leaguewrap",
-            "version": "0.6.1",
+            "version": "dev-dev/0.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paquettg/leaguewrap.git",
-                "reference": "c7162afc9ab2980d8ab29498aa1b4e75cf7d2198"
+                "reference": "dc89d44c29a066c8ec4e545df7b84ceb1bf75ad3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paquettg/leaguewrap/zipball/c7162afc9ab2980d8ab29498aa1b4e75cf7d2198",
-                "reference": "c7162afc9ab2980d8ab29498aa1b4e75cf7d2198",
+                "url": "https://api.github.com/repos/paquettg/leaguewrap/zipball/dc89d44c29a066c8ec4e545df7b84ceb1bf75ad3",
+                "reference": "dc89d44c29a066c8ec4e545df7b84ceb1bf75ad3",
                 "shasum": ""
             },
             "require": {
@@ -140,8 +140,7 @@
             },
             "require-dev": {
                 "mockery/mockery": "0.8.*",
-                "phpunit/phpunit": "3.7.*",
-                "satooshi/php-coveralls": "0.6.*"
+                "phpunit/phpunit": "3.7.*"
             },
             "type": "library",
             "autoload": {
@@ -167,18 +166,25 @@
                 "facade",
                 "league",
                 "legends",
-                "proxy",
                 "wrap"
             ],
-            "time": "2015-01-14 18:15:29"
+            "time": "2014-07-10 14:41:16"
         }
     ],
-    "packages-dev": [],
-    "aliases": [],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
     "minimum-stability": "stable",
-    "stability-flags": [],
-    "prefer-stable": false,
-    "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": []
+    "stability-flags": {
+        "paquettg/leaguewrap": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
 }

@@ -8,10 +8,10 @@ class MasteryPage extends AbstractListDto {
 	/**
 	 * Attempts to get a mastery by its id.
 	 *
-	 * @param int $masteryId
+	 * @param int $id
 	 * @return Mastery|null
 	 */
-	public function mastery($masteryId)
+	public function mastery($id)
 	{
 		if ( ! isset($this->info['masteries']))
 		{
@@ -19,9 +19,9 @@ class MasteryPage extends AbstractListDto {
 			return null;
 		}
 		$masteries = $this->info['masteries'];
-		if (isset($masteries[$masteryId]))
+		if (isset($masteries[$id]))
 		{
-			return $masteries[$masteryId];
+			return $masteries[$id];
 		}
 		return null;
 		

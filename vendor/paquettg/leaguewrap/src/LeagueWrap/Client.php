@@ -7,7 +7,6 @@ use LeagueWrap\Exception\BaseUrlException;
 class Client implements ClientInterface {
 
 	protected $guzzle;
-	protected $timeout = 0;
 
 	/**
 	 * Sets the base url to be used for future requests.
@@ -17,23 +16,7 @@ class Client implements ClientInterface {
 	 */
 	public function baseUrl($url)
 	{
-		$this->guzzle = new Guzzle([
-			'base_url' => $url,
-			'defaults' => ['headers' => ['Accept-Encoding' => 'gzip,deflate']]
-		]);
-	}
-
-	/**
-	 * Set a timeout in seconds for how long we will wait for the server
-	 * to respond. If the server does not respond within the set number
-	 * of seconds we throw an exception.
-	 *
-	 * @param int $seconds
-	 * @return void
-	 */
-	public function setTimeout($seconds)
-	{
-		$this->timeout = floatval($seconds);
+		$this->guzzle = new Guzzle(['base_url' => $url]);
 	}
 
 	/**
@@ -53,7 +36,7 @@ class Client implements ClientInterface {
 
 		$uri      = $path.'?'.http_build_query($params);
 		$response = $this->guzzle
-		                 ->get($uri, ['connect_timeout' => $this->timeout]);
+		                 ->get($uri);
 		
 		$body = $response->getBody();
 		$body->seek(0);

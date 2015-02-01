@@ -2,13 +2,6 @@
 namespace LeagueWrap\Dto;
 
 class Game extends AbstractDto {
-	use ImportStaticTrait;
-
-	protected $staticFields = [
-		'championId' => 'champion',
-		'spell1'     => 'summonerSpell',
-		'spell2'     => 'summonerSpell',
-	];
 
 	/**
 	 * Set up the information about this game.
@@ -41,10 +34,10 @@ class Game extends AbstractDto {
 	/**
 	 * Attempts to get a fellow player from this game.
 	 *
-	 * @param int $playerId
+	 * @param int $id
 	 * @return Player|null
 	 */
-	public function player($playerId)
+	public function player($id)
 	{
 		if ( ! isset($this->info['fellowPlayers']))
 		{
@@ -52,9 +45,9 @@ class Game extends AbstractDto {
 			return null;
 		}
 		$players = $this->info['fellowPlayers'];
-		if (isset($players[$playerId]))
+		if (isset($players[$id]))
 		{
-			return $players[$playerId];
+			return $players[$id];
 		}
 		return null;
 	}

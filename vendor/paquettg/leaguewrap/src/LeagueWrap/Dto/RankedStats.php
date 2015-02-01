@@ -23,16 +23,16 @@ class RankedStats extends AbstractListDto {
 	/**
 	 * Get the champion by the id returned by the API.
 	 *
-	 * @param int $championId
+	 * @param int $id
 	 * @return ChampionStats|null
 	 */
-	public function champion($championId)
+	public function champion($id)
 	{
-		if ( ! isset($this->info['champions'][$championId]))
+		if ( ! isset($this->info['champions'][$id]))
 		{
 			return null;
 		}
 
-		return $this->info['champions'][$championId];
+		return $this->info['champions'][$id];
 	}
 }

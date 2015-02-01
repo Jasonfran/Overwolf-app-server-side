@@ -1,5 +1,5 @@
 {
     "require": {
-        "paquettg/leaguewrap": "0.6.1"
+        "paquettg/leaguewrap": "dev-dev/0.6.0"
     }
 }

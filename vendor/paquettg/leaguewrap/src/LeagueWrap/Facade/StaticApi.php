@@ -1,11 +1,11 @@
 <?php
-namespace LeagueWrap\StaticProxy;
+namespace LeagueWrap\Facade;
 
 use LeagueWrap\Api;
 use LeagueWrap\ClientInterface;
 use LeagueWrap\Exception\ApiNotLoadedException;
 
-final class StaticApi extends AbstractStaticProxy {
+final class StaticApi extends AbstractFacade {
 
 	/**
 	 * The api class to be used for all requests.

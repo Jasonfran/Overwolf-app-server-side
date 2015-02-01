@@ -1,10 +1,10 @@
 <?php
-namespace LeagueWrap\StaticProxy;
+namespace LeagueWrap\Facade;
 
 use Api;
 use LeagueWrap\Api\Summoner;
 
-class StaticSummoner extends AbstractStaticProxy {
+class StaticSummoner extends AbstractFacade {
 
 	/**
 	 * The summoner api class to be used for all requests.
