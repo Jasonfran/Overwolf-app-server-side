@@ -10,10 +10,10 @@ class RecentGames extends AbstractListDto {
 		if (isset($info['games']))
 		{
 			$games = [];
-			foreach ($info['games'] as $gameId => $game)
+			foreach ($info['games'] as $id => $game)
 			{
-				$gameDto        = new Game($game);
-				$games[$gameId] = $gameDto;
+				$gameDto    = new Game($game);
+				$games[$id] = $gameDto;
 			}
 			$info['games'] = $games;
 		}
@@ -24,16 +24,16 @@ class RecentGames extends AbstractListDto {
 	/**
 	 * Get a game by the id.
 	 *
-	 * @param int $gameId
+	 * @param int $id
 	 * @return Game|null
 	 */
-	public function game($gameId)
+	public function game($id)
 	{
-		if ( ! isset($this->info['games'][$gameId]))
+		if ( ! isset($this->info['games'][$id]))
 		{
 			return null;
 		}
 
-		return $this->info['games'][$gameId];
+		return $this->info['games'][$id];
 	}
 }

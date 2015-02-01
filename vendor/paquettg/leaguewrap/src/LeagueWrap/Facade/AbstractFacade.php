@@ -1,7 +1,7 @@
 <?php
-namespace LeagueWrap\StaticProxy;
+namespace LeagueWrap\Facade;
 
-abstract class AbstractStaticProxy {
+abstract class AbstractFacade {
 
 	/**
 	 * Mount this class as an alias.
@@ -26,7 +26,7 @@ abstract class AbstractStaticProxy {
 	}
 
 	/**
-	 * Forces the current instance of the static proxy to be removed.
+	 * Forces the current instance of the facade to be removed.
 	 *
 	 * @return void
 	 */

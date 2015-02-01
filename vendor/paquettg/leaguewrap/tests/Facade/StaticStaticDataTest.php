@@ -2,7 +2,7 @@
 
 use Mockery as m;
 
-class StaticProxyStaticStaticDataTest extends PHPUnit_Framework_TestCase {
+class FacadeStaticStaticDataTest extends PHPUnit_Framework_TestCase {
 
 	protected $client;
 

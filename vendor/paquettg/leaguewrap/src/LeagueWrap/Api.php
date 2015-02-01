@@ -4,14 +4,11 @@ namespace LeagueWrap;
 use LeagueWrap\Cache;
 use LeagueWrap\CacheInterface;
 use LeagueWrap\Api\AbstractApi;
-use LeagueWrap\Api\Staticdata;
 use LeagueWrap\LimitInterface;
 use LeagueWrap\Limit\Limit;
 use LeagueWrap\Limit\Collection;
-use LeagueWrap\Limit\FileLimit;
 use LeagueWrap\Exception\NoKeyException;
 use LeagueWrap\Exception\ApiClassNotFoundException;
-use LeagueWrap\Exception\NoValidLimitInterfaceException;
 
 /**
  * @method \LeagueWrap\Api\Champion champion()
@@ -39,24 +36,11 @@ class Api {
 	protected $client;
 
 	/**
-	 * The amount of seconds we will wait for a responde fromm the riot
-	 * server. 0 means wait indefinitely.
-	 */
-	protected $timeout = 0;
-
-	/**
 	 * This contains the cache container that we intend to use.
 	 *
 	 * @var CacheInterface
 	 */
 	protected $cache;
-
-	/**
-	 * Only check the cache. Do not do any actual request.
-	 *
-	 * @var bool
-	 */
-	protected $cacheOnly = false;
 
 	/**
 	 * How long, in seconds, should we remember a query's response.
@@ -125,9 +109,6 @@ class Api {
 	 */
 	public function __call($method, $arguments)
 	{
-		// we don't use the arguments at the moment.
-		unset($arguments);
-
 		$className = 'LeagueWrap\\Api\\'.ucwords(strtolower($method));
 		if ( ! class_exists($className))
 		{
@@ -143,13 +124,7 @@ class Api {
 
 		$api->setKey($this->key)
 		    ->setRegion($this->region)
-		    ->setTimeout($this->timeout)
-		    ->setCacheOnly($this->cacheOnly);
-		if ($this->attachStaticData &&
-		    ! ($api instanceof Staticdata))
-		{
-		    $api->attachStaticData($this->attachStaticData, $this->staticData());
-		}
+		    ->attachStaticData($this->attachStaticData);
 
 		if ($this->cache instanceof CacheInterface)
 		{
@@ -168,33 +143,6 @@ class Api {
 	public function setRegion($region)
 	{
 		$this->region = $region;
-		return $this;
-	}
-
-	/**
-	 * Set a timeout in seconds for how long we will wait for the server
-	 * to respond. If the server does not respond within the set number
-	 * of seconds we throw an exception.
-	 *
-	 * @param float $seconds
-	 * @chainable
-	 */
-	public function setTimeout($seconds)
-	{
-		$this->timeout = floatval($seconds);
-		return $this;
-	}
-
-	/**
-	 * Sets the api endpoint to only use the cache to get the needed
-	 * information for the requests.
-	 *
-	 * @param $cacheOnly bool
-	 * @chainable
-	 */
-	public function setCacheOnly($cacheOnly = true)
-	{
-		$this->cacheOnly = $cacheOnly;
 		return $this;
 	}
 
@@ -224,54 +172,20 @@ class Api {
 	 *
 	 * @param int $hits
 	 * @param int $seconds
-	 * @param string $region
 	 * @param Limit $limit
 	 * @chainable
 	 */
-	public function limit($hits, $seconds, $region = 'all', LimitInterface $limit = null)
+	public function limit($hits, $seconds, LimitInterface $limit = null)
 	{
 		if (is_null($limit))
 		{
 			// use the built in limit interface
 			$limit = new Limit;
 		}
-		if ( ! $limit->isValid())
-		{
-			// fall back to the file base limit handling
-			$limit = new FileLimit;
-			if ( ! $limit->isValid())
-			{
-				throw new NoValidLimitInterfaceException("We could not load a valid limit interface.");
-			}
-		}
 
-		if ($region == 'all')
-		{
-			foreach ([
-				'br',
-				'eune',
-				'euw',
-				'kr',
-				'lan',
-				'las',
-				'na',
-				'oce',
-				'ru',
-				'tr'] as $region)
-			{
-				$newLimit = $limit->newInstance();
-				$newLimit->setRate($hits, $seconds, $region);
-				$this->collection->addLimit($newLimit);
-			}
-		}
-		else
-		{
-			// lower case the region
-			$region = strtolower($region);
-			$limit->setRate($hits, $seconds, $region);
-			$this->collection->addLimit($limit);
-		}
+		$limit->setRate($hits, $seconds);
 
+		$this->collection->addLimit($limit);
 		return $this;
 	}
 

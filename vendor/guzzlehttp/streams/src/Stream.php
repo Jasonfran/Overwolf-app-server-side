@@ -7,12 +7,19 @@ namespace GuzzleHttp\Stream;
  */
 class Stream implements MetadataStreamInterface
 {
+    /** @var resource Stream resource */
     private $stream;
+
+    /** @var int Size of the stream contents in bytes */
     private $size;
+
+    /** @var bool */
     private $seekable;
     private $readable;
     private $writable;
-    private $uri;
+
+    /** @var array Stream metadata */
+    private $meta = [];
 
     /** @var array Hash of readable and writable stream types */
     private static $readWriteHash = [
@@ -59,11 +66,10 @@ class Stream implements MetadataStreamInterface
 
         $this->size = $size;
         $this->stream = $stream;
-        $meta = stream_get_meta_data($this->stream);
-        $this->seekable = $meta['seekable'];
-        $this->readable = isset(self::$readWriteHash['read'][$meta['mode']]);
-        $this->writable = isset(self::$readWriteHash['write'][$meta['mode']]);
-        $this->uri = isset($meta['uri']) ? $meta['uri'] : null;
+        $this->meta = stream_get_meta_data($this->stream);
+        $this->seekable = $this->meta['seekable'];
+        $this->readable = isset(self::$readWriteHash['read'][$this->meta['mode']]);
+        $this->writable = isset(self::$readWriteHash['write'][$this->meta['mode']]);
     }
 
     /**
@@ -76,10 +82,6 @@ class Stream implements MetadataStreamInterface
 
     public function __toString()
     {
-        if (!$this->stream) {
-            return '';
-        }
-
         $this->seek(0);
 
         return (string) stream_get_contents($this->stream);
@@ -87,9 +89,7 @@ class Stream implements MetadataStreamInterface
 
     public function getContents($maxLength = -1)
     {
-        return $this->stream
-            ? stream_get_contents($this->stream, $maxLength)
-            : '';
+        return stream_get_contents($this->stream, $maxLength);
     }
 
     public function close()
@@ -97,17 +97,13 @@ class Stream implements MetadataStreamInterface
         if (is_resource($this->stream)) {
             fclose($this->stream);
         }
-
-        $this->detach();
+        $this->meta = [];
+        $this->stream = null;
     }
 
     public function detach()
     {
-        $result = $this->stream;
-        $this->stream = $this->size = $this->uri = null;
-        $this->readable = $this->writable = $this->seekable = false;
-
-        return $result;
+        $this->stream = null;
     }
 
     public function getSize()
@@ -116,15 +112,8 @@ class Stream implements MetadataStreamInterface
             return $this->size;
         }
 
-        if (!$this->stream) {
-            return null;
-        }
-
-        // Clear the stat cache if the stream has a URI
-        if ($this->uri) {
-            clearstatcache(true, $this->uri);
-        }
-
+        // If the stream is a file based stream and local, then use fstat
+        clearstatcache(true, $this->meta['uri']);
         $stats = fstat($this->stream);
         if (isset($stats['size'])) {
             $this->size = $stats['size'];
@@ -136,27 +125,27 @@ class Stream implements MetadataStreamInterface
 
     public function isReadable()
     {
-        return $this->readable;
+        return $this->stream && $this->readable;
     }
 
     public function isWritable()
     {
-        return $this->writable;
+        return $this->stream && $this->writable;
     }
 
     public function isSeekable()
     {
-        return $this->seekable;
+        return $this->stream && $this->seekable;
     }
 
     public function eof()
     {
-        return $this->stream && feof($this->stream);
+        return feof($this->stream);
     }
 
     public function tell()
     {
-        return $this->stream ? ftell($this->stream) : false;
+        return ftell($this->stream);
     }
 
     public function setSize($size)
@@ -175,7 +164,7 @@ class Stream implements MetadataStreamInterface
 
     public function read($length)
     {
-        return $this->readable ? fread($this->stream, $length) : '';
+        return fread($this->stream, $length);
     }
 
     public function write($string)
@@ -183,7 +172,7 @@ class Stream implements MetadataStreamInterface
         // We can't know the size after writing anything
         $this->size = null;
 
-        return $this->writable ? fwrite($this->stream, $string) : false;
+        return fwrite($this->stream, $string);
     }
 
     /**
@@ -202,8 +191,8 @@ class Stream implements MetadataStreamInterface
      */
     public function getMetadata($key = null)
     {
-        $meta = $this->stream ? stream_get_meta_data($this->stream) : [];
-
-        return !$key ? $meta : (isset($meta[$key]) ? $meta[$key] : null);
+        return !$key
+            ? $this->meta
+            : (isset($this->meta[$key]) ? $this->meta[$key] : null);
     }
 }

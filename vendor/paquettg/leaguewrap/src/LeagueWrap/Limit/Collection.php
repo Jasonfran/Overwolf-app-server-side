@@ -12,12 +12,11 @@ class Collection {
 		$this->limits[] = $limit;
 	}
 
-	public function hitLimits($region, $count = 1)
+	public function hitLimits($count = 1)
 	{
 		foreach ($this->limits as $limit)
 		{
-			if ($limit->getRegion() == $region &&
-			     ! $limit->hit($count))
+			if ( ! $limit->hit($count))
 			{
 				return false;
 			}
@@ -26,16 +25,13 @@ class Collection {
 		return true;
 	}
 
-	/**
-	 * Returns the lowest
-	 */
 	public function remainingHits()
 	{
 		$remaining = null;
 		foreach ($this->limits as $limit)
 		{
 			$hitsLeft = $limit->remaining();
-			if (is_null($remaining) ||
+			if (is_null($remaining) or
 			    $hitsLeft < $remaining)
 			{
 				$remaining = $hitsLeft;

@@ -28,11 +28,11 @@ class Roster extends AbstractListDto {
 	 *
 	 * @return null|Member
 	 */
-	public function member($memberId)
+	public function member($id)
 	{
-		if (isset($this->info['memberList'][$memberId]))
+		if (isset($this->info['memberList'][$id]))
 		{
-			return $this->info['memberList'][$memberId];
+			return $this->info['memberList'][$id];
 		}
 		// could not find the member
 		return null;

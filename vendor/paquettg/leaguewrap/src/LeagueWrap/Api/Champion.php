@@ -58,23 +58,22 @@ class Champion extends AbstractApi {
 			'freeToPlay' => $this->free,
 		];
 
-		$info = $this->request('champion', $params);
+		$array = $this->request('champion', $params);
 
 		// set up the champions
-		$championList = new ChampionList($info);
-		return $this->attachStaticDataToDto($championList);
+		return new ChampionList($array);
 	}
 
 	/**
 	 * Gets the information for a single champion
 	 *
-	 * @param int $championId
+	 * @param int $id
 	 * @return Champ
 	 */
-	public function championById($championId)
+	public function championById($id)
 	{
-		$info  = $this->request('champion/'.$championId);
-		return $this->attachStaticDataToDto(new Champ($info));
+		$info = $this->request('champion/'.$id);
+		return new Champ($info);
 	}
 
 	/**
@@ -85,9 +84,7 @@ class Champion extends AbstractApi {
 	 */
 	public function free()
 	{
-		$this->free   = 'true';
-		$championList = $this->all();
-		$this->free   = 'false';
-		return $championList;
+		$this->free = 'true';
+		return $this->all();
 	}
 }

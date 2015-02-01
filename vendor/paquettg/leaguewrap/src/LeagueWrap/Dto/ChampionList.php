@@ -12,9 +12,9 @@ class ChampionList extends AbstractListDto {
 			$champions = [];
 			foreach ($info['champions'] as $champion)
 			{
-				$championId             = intval($champion['id']);
+				$id             = intval($champion['id']);
 				$championDto    = new Champion($champion);
-				$champions[$championId] = $championDto;
+				$champions[$id] = $championDto;
 			}
 			$info['champions'] = $champions;
 		}
@@ -24,15 +24,15 @@ class ChampionList extends AbstractListDto {
 	/**
 	 * Get a champion by its id.
 	 *
-	 * @param int $championId
+	 * @param int $id
 	 * @return Champion|null
 	 */
-	public function getChampion($championId)
+	public function getChampion($id)
 	{
-		if ( ! isset($this->info['champions'][$championId]))
+		if ( ! isset($this->info['champions'][$id]))
 		{
 			return null;
 		}
-		return $this->info['champions'][$championId];
+		return $this->info['champions'][$id];
 	}
 }

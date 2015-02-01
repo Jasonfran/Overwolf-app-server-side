@@ -2,7 +2,6 @@
 namespace LeagueWrap\Api;
 
 use LeagueWrap\Dto\Summoner;
-use LeagueWrap\Dto\AbstractDto;
 use LeagueWrap\Api;
 use LeagueWrap\Region;
 use LeagueWrap\Cache;
@@ -12,7 +11,6 @@ use LeagueWrap\Limit\Collection;
 use LeagueWrap\Exception\RegionException;
 use LeagueWrap\Exception\LimitReachedException;
 use LeagueWrap\Exception\InvalidIdentityException;
-use LeagueWrap\Exception\CacheNotFoundException;
 
 abstract class AbstractApi {
 	
@@ -75,24 +73,11 @@ abstract class AbstractApi {
 	protected $requests = 0;
 
 	/**
-	 * The amount of seconds we will wait for a responde fromm the riot
-	 * server. 0 means wait indefinitely.
-	 */
-	protected $timeout = 0;
-
-	/**
 	 * This is the cache container that we intend to use.
 	 *
 	 * @var CacheInterface
 	 */
 	protected $cache = null;
-
-	/**
-	 * Only check the cache. Do not do any actual request.
-	 *
-	 * @var bool
-	 */
-	protected $cacheOnly = false;
 
 	/**
 	 * The amount of time we intend to remember the response for.
@@ -114,13 +99,6 @@ abstract class AbstractApi {
 	 * @var bool
 	 */
 	protected $attachStaticData = false;
-
-	/**
-	 * A static data api object to be used for static data request.
-	 *
-	 * @var staticData
-	 */
-	protected $staticData = null;
 
 	/**
 	 * Default DI constructor.
@@ -172,43 +150,14 @@ abstract class AbstractApi {
 	}
 
 	/**
-	 * Set a timeout in seconds for how long we will wait for the server
-	 * to respond. If the server does not respond within the set number
-	 * of seconds we throw an exception.
-	 *
-	 * @param float $seconds
-	 * @chainable
-	 */
-	public function setTimeout($seconds)
-	{
-		$this->timeout = floatval($seconds);
-		return $this;
-	}
-
-	/**
-	 * Sets the api endpoint to only use the cache to get the needed
-	 * information for the requests.
-	 *
-	 * @param $cacheOnly bool
-	 * @chainable
-	 */
-	public function setCacheOnly($cacheOnly = true)
-	{
-		$this->cacheOnly = $cacheOnly;
-		return $this;
-	}
-
-	/**
 	 * Set wether to attach static data to the response.
 	 *
 	 * @param bool $attach
-	 * @param StaticData $static
 	 * @chainable
 	 */
-	public function attachStaticData($attach = true, Staticdata $static = null)
+	public function attachStaticData($attach = true)
 	{
 		$this->attachStaticData = $attach;
-		$this->staticData       = $static;
 		return $this;
 	}
 
@@ -270,6 +219,7 @@ abstract class AbstractApi {
 	 * @param bool $static
 	 * @return array
 	 * @throws RegionException
+	 * @throws LimitReachedException
 	 */
 	protected function request($path, $params = [], $static = false)
 	{
@@ -284,10 +234,6 @@ abstract class AbstractApi {
 
 		// set the region based domain
 		$this->client->baseUrl($this->region->getDomain($static));
-		if ($this->timeout > 0)
-		{
-			$this->client->setTimeout($this->timeout);
-		}
 
 		// add the key to the param list
 		$params['api_key'] = $this->key;
@@ -302,54 +248,39 @@ abstract class AbstractApi {
 			{
 				$content = $this->cache->get($cacheKey);
 			}
-			elseif ($this->cacheOnly)
-			{
-				throw new CacheNotFoundException("A cache item for '$uri?".http_build_query($params)."' was not found!");
-			}
 			else
 			{
-				$content = $this->clientRequest($static, $uri, $params);
+				// check if we have hit the limit
+				if ( ! $static AND
+				     ! $this->collection->hitLimits())
+				{
+					throw new LimitReachedException('You have hit the request limit in your collection.');
+				}
+				$content = $this->client->request($uri, $params);
+
+				// request was succesful
+				++$this->requests;
 
 				// we want to cache this response
 				$this->cache->set($content, $cacheKey, $this->seconds);
 			}
 		}
-		elseif ($this->cacheOnly)
-		{
-			throw new CacheNotFoundException('The cache is not enabled but we were told to use only the cache!');
-		}
 		else
 		{
-			$content = $this->clientRequest($static, $uri, $params);
+			// check if we have hit the limit
+			if ( ! $static AND
+			     ! $this->collection->hitLimits())
+			{
+				throw new LimitReachedException('You have hit the request limit in your collection.');
+			}
+			$content = $this->client->request($uri, $params);
+
+			// request was succesful
+			++$this->requests;
 		}
 
 		// decode the content
 		return json_decode($content, true);
-	}
-
-	/**
-	 * Make the actual request.
-	 * 
-	 * @param bool $static
-	 * @param string $uri
-	 * @param array $params
-	 * @return string
-	 * @throws LimitReachedException
-	 */
-	protected function clientRequest($static, $uri, $params)
-	{
-		// check if we have hit the limit
-		if ( ! $static &&
-			 ! $this->collection->hitLimits($this->region->getRegion()))
-		{
-			throw new LimitReachedException('You have hit the request limit in your collection.');
-		}
-		$content = $this->client->request($uri, $params);
-
-		// request was succesful
-		++$this->requests;
-
-		return $content;
 	}
 
 	/**
@@ -485,22 +416,6 @@ abstract class AbstractApi {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Will attempt to attach any static data to the given dto if
-	 * the attach static data flag is set.
-	 *
-	 * $param AbstractDto $dto
-	 * @return AbstractDto
-	 */
-	protected function attachStaticDataToDto(AbstractDto $dto)
-	{
-		if ($this->attachStaticData)
-		{
-			$dto->loadStaticData($this->staticData);
-		}
-		return $dto;
 	}
 }
 

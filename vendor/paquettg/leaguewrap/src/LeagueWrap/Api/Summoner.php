@@ -215,14 +215,14 @@ class Summoner extends AbstractApi {
 				$slots = $info['slots'];
 				unset($info['slots']);
 
-				$runePage = $this->attachStaticDataToDto(new RunePage($info));
+				$runePage = new RunePage($info);
 
 				// set runes
 				$runes = [];
 				foreach ($slots as $slot)
 				{
 					$id         = $slot['runeSlotId'];
-					$rune       = $this->attachStaticDataToDto(new Rune($slot));
+					$rune       = new Rune($slot);
 					$runes[$id] = $rune;
 				}
 				$runePage->runes = $runes;
@@ -232,14 +232,14 @@ class Summoner extends AbstractApi {
 		}
 
 		$this->attachResponses($identities, $summoners, 'runePages');
-
-		if (is_array($identities))
+		if (count($summoners) == 1)
 		{
-			return $summoners;
+			$runePages = reset($summoners);
+			return $runePages;
 		}
 		else
 		{
-			return reset($summoners);
+			return $summoners;
 		}
 	}
 
@@ -269,13 +269,13 @@ class Summoner extends AbstractApi {
 
 				$masteriesInfo = $info['masteries'];
 				unset($info['masteries']);
-				$masteryPage = $this->attachStaticDataToDto(new MasteryPage($info));
+				$masteryPage = new MasteryPage($info);
 				// set masterys
 				$masteries = [];
 				foreach ($masteriesInfo as $mastery)
 				{
 					$id             = $mastery['id'];
-					$mastery        = $this->attachStaticDataToDto(new Mastery($mastery));
+					$mastery        = new Mastery($mastery);
 					$masteries[$id] = $mastery;
 				}
 				$masteryPage->masteries = $masteries;
@@ -285,14 +285,14 @@ class Summoner extends AbstractApi {
 		}
 
 		$this->attachResponses($identities, $summoners, 'masteryPages');
-
-		if (is_array($identities))
+		if (count($summoners) == 1)
 		{
-			return $summoners;
+			$masteryPages = reset($summoners);
+			return $masteryPages;
 		}
 		else
 		{
-			return reset($summoners);
+			return $summoners;
 		}
 	}
 
@@ -311,25 +311,25 @@ class Summoner extends AbstractApi {
 			{
 				throw new ListMaxException('This request can only support a list of 40 elements, '.count($ids).' given.');
 			}
-			$idList = implode(',', $ids);
+			$ids = implode(',', $ids);
 		}
-		$array     = $this->request('summoner/'.$idList);
+		$array     = $this->request('summoner/'.$ids);
 		$summoners = [];
-		foreach ($array as $info)
+		foreach ($array as $id => $info)
 		{
-			$summoner               = $this->attachStaticDataToDto(new Dto\Summoner($info));
+			$summoner               = new Dto\Summoner($info);
 			$name                   = $summoner->name;
 			$this->summoners[$name] = $summoner;
 			$summoners[$name]       = $summoner;
 		}
 
-		if (is_array($ids))
+		if (count($summoners) == 1)
 		{
-			return $summoners;
+			return reset($summoners);
 		}
 		else
 		{
-			return reset($summoners);
+			return $summoners;
 		}
 	}
 
@@ -346,29 +346,29 @@ class Summoner extends AbstractApi {
 		{
 			if (count($names) > 40)
 			{
-				throw new ListMaxException('this request can only support a list of 40 elements, '.count($names).' given.');
+				throw new ListMaxException('this request can only support a list of 40 elements, '.count($ids).' given.');
 			}
-			$nameList = implode(',', $names);
+			$names = implode(',', $names);
 		}
 
 		// clean the name
-		$names     = htmlspecialchars($nameList);
-		$array     = $this->request('summoner/by-name/'.$nameList);
+		$names     = htmlspecialchars($names);
+		$array     = $this->request('summoner/by-name/'.$names);
 		$summoners = [];
 		foreach ($array as $name => $info)
 		{
-			$summoner = $this->attachStaticDataToDto(new Dto\Summoner($info));
+			$summoner = new Dto\Summoner($info);
 			$this->summoners[$name] = $summoner;
 			$summoners[$name] = $summoner;
 		}
 		
-		if (is_array($names))
+		if (count($summoners) == 1)
 		{
-			return $summoners;
+			return reset($summoners);
 		}
 		else
 		{
-			return reset($summoners);
+			return $summoners;
 		}
 	}
 }

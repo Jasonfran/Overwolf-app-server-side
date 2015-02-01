@@ -1,10 +1,10 @@
 <?php
-namespace LeagueWrap\StaticProxy;
+namespace LeagueWrap\Facade;
 
 use Api;
 use LeagueWrap\Api\Champion;
 
-class StaticChampion extends AbstractStaticProxy {
+class StaticChampion extends AbstractFacade {
 
 	/**
 	 * The champion api class to be used for all requests.

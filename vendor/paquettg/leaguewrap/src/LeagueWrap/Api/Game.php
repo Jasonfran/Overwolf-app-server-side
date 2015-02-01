@@ -42,15 +42,15 @@ class Game extends AbstractApi {
 	/**
 	 * Get the recent games by summoner id.
 	 *
-	 * @param mixed $summonerId
+	 * @param mixed $id
 	 * @return array
 	 */
 	public function recent($identity)
 	{
-		$summonerId = $this->extractId($identity);
+		$id = $this->extractId($identity);
 
-		$info  = $this->request('game/by-summoner/'.$summonerId.'/recent');
-		$games = $this->attachStaticDataToDto(new RecentGames($info));
+		$array = $this->request('game/by-summoner/'.$id.'/recent');
+		$games = new RecentGames($array);
 
 		$this->attachResponse($identity, $games, 'recentGames');
 

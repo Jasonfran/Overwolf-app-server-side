@@ -1,11 +1,5 @@
 all: clean coverage
 
-release: tag
-	git push origin --tags
-
-tag:
-	chag tag --sign --debug CHANGELOG.rst
-
 test:
 	vendor/bin/phpunit
 

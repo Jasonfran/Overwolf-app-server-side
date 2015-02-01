@@ -7,8 +7,8 @@ namespace GuzzleHttp\Stream;
  */
 class GuzzleStreamWrapper
 {
-    /** @var resource */
-    public $context;
+    /** @var StreamInterface[] */
+    private static $streams = [];
 
     /** @var StreamInterface */
     private $stream;
@@ -39,21 +39,22 @@ class GuzzleStreamWrapper
                 . 'writable, or both.');
         }
 
-        return fopen('guzzle://stream', $mode, null, stream_context_create([
-            'guzzle' => ['stream' => $stream]
-        ]));
+        $hash = spl_object_hash($stream);
+        self::$streams[$hash] = $stream;
+
+        return fopen('guzzle://' . $hash, $mode);
     }
 
     public function stream_open($path, $mode, $options, &$opened_path)
     {
-        $options = stream_context_get_options($this->context);
+        $hash = explode('://', $path)[1];
 
-        if (!isset($options['guzzle']['stream'])) {
+        if (!isset(self::$streams[$hash])) {
             return false;
         }
 
         $this->mode = $mode;
-        $this->stream = $options['guzzle']['stream'];
+        $this->stream = self::$streams[$hash];
 
         return true;
     }
@@ -66,6 +67,11 @@ class GuzzleStreamWrapper
     public function stream_write($data)
     {
         return (int) $this->stream->write($data);
+    }
+
+    public function stream_close()
+    {
+        unset(self::$streams[spl_object_hash($this->stream)]);
     }
 
     public function stream_tell()

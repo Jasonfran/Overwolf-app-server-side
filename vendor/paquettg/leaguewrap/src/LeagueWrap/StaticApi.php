@@ -4,11 +4,11 @@ namespace Leaguewrap;
 final class StaticApi {
 
 	/**
-	 * A list of all known static proxies to be found.
+	 * A list of all knowne facades to be found.
 	 *
 	 * @var array
 	 */
-	protected static $staticProxy = [
+	protected static $facades = [
 		'Api',
 		'Champion',
 		'Game',
@@ -20,19 +20,19 @@ final class StaticApi {
 	];
 
 	/**
-	 * Mount all the static static proxys found in the StaticProxy directory.
+	 * Mount all the static facades found in the Facade directory.
 	 *
 	 * @return void
 	 */
 	public static function mount()
 	{
-		foreach (self::$staticProxy as $staticProxy)
+		foreach (self::$facades as $facade)
 		{
-			$staticProxyObject = '\\LeagueWrap\\StaticProxy\\Static'.$staticProxy;
+			$facade = '\\LeagueWrap\\Facade\\Static'.$facade;
 			// mount it
-			$staticProxyObject::mount();
+			$facade::mount();
 			// freshen it up
-			$staticProxyObject::fresh();
+			$facade::fresh();
 		}
 	}
 }
