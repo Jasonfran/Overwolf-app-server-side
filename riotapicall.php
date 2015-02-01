@@ -66,7 +66,7 @@
 
 
 	try{
-		$season = $api->stats()->setSeason("SEASON5"):
+		$season = $api->stats()->setSeason("SEASON2015"):
 		$rankedStats = $season->summary($summonerInfo->id)[5];
 		$rankedStats2 = $season->summary($summonerInfo->id);
 		for ($i=0; $i < count($rankedStats2); $i++) { 
