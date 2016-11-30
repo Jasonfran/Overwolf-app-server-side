@@ -5,7 +5,7 @@
 
 	use LeagueWrap\Api;
 
-	$myKey = "10c46b79-0896-48d7-9364-67f773efdccd";
+	$myKey = "key";
 
 	if (($_GET["region"] || $_GET["summoner"]) == NULL){
 		exit('{"success":"false", "error":"No summoner name or region"}');
