@@ -8,7 +8,7 @@
 	$opts = array(
 		'http'=>array(
 			'method'=>"GET",
-			'header'=>"X-Mashape-Authorization: hqBjBrX0GqmshBI198jjuc4rbLE1p19B59YjsnQxrWUxsV8iMi"
+			'header'=>"X-Mashape-Authorization: auth key"
 		)
 	);
 
@@ -41,7 +41,7 @@
 	if(!$JSONdecoded->success == "false"){
 		$teamOne = $JSONdecoded->game->teamOne->array;
 		$teamTwo = $JSONdecoded->game->teamTwo->array;
-		$myKey = "ba1f3416-73c2-4e01-b53a-fc1e9ff83e37";
+		$myKey = "api key";
 
 		$api = new Api($myKey); // Load up the API
 		$api->setRegion($region); 
